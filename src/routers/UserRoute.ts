@@ -15,7 +15,7 @@ export class UserRoute extends Route{
 
     protected setRoutes(): void {
         
-        this.router.get(`${this.url}findAll`,(req, res)=>{
+        this.router.get(`${this.url}findAll`,(req: any, res: any)=>{
             this.Contorller.findAll(req, res);
         })
 
@@ -31,8 +31,14 @@ export class UserRoute extends Route{
          * } 
          * @returns resp<Student>
          */
-        this.router.post(`${this.url}insertOne`,(req, res)=>{
+        this.router.post(`${this.url}insertOne`,(req: any, res: any)=>{
             this.Contorller.insertOne(req, res);
+        })
+        this.router.delete(`${this.url}deleteById`,(req: any, res: any)=>{
+            this.Contorller.deleteById(req, res);
+        })
+        this.router.put(`${this.url}updateNameByID`,(req: any, res: any)=>{
+            this.Contorller.updateNameByID(req, res);
         })
     }
 }
