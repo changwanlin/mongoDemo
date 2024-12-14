@@ -6,6 +6,11 @@ import { Document } from "mongoose"
 import { MongoDB } from "../utils/MongoDB";
 import { DBResp } from "../interfaces/DBResp";
 import { resp } from "../utils/resp";
+import express from 'express';
+const app = express();
+
+app.use(express.json()); // 確保正確解析 JSON Body
+
 
 type seatInfo = {
     schoolName:string,
@@ -151,15 +156,22 @@ export class UserService extends Service {
             message: "",
             body: undefined
         }
-        try{
-            const res = await studentsModel.deleteOne({_id:id})
-            resp.message = "sucess";
-            resp.body = res;
-            
-        }catch(error){
-            resp.message = error as string;
-            resp.code=500;
+        const user = await studentsModel.findById(id);
+        if(user){
+            try{
+                const res = await studentsModel.deleteOne({_id:id})
+                resp.message = "sucess";
+                resp.body = res;
+                
+            }catch(error){
+                resp.message = error as string;
+                resp.code=500;
+    
+            }
 
+        }else{
+            resp.code = 404;
+            resp.message=" user not found";
         }
         return resp;
 
@@ -170,31 +182,31 @@ export class UserService extends Service {
      * @param name 新名字
      * @returns 狀態
      */
-        public async updateNameByID(id:string,name:string){
-            const resp:resp<DBResp<Student>|undefined> = {
-                code:200,
-                message:"",
-                body: undefined
-            }
-    
-            const user = await studentsModel.findById(id)
-            if(user){
-                try{
-                    user.name = name;
-                    await user.save();
-                    resp.body = user;
-                    resp.message = "update sucess";
-                }catch(error){
-                    resp.code = 500;
-                    resp.message = "server error"   
-                }
-            }else{
-                resp.code = 404;
-                resp.message = "user not found"
-            }
-            return resp;
-    
+    public async updateNameByID(id:string,name:string){
+        const resp:resp<DBResp<Student>|undefined> = {
+            code:200,
+            message:"",
+            body: undefined
         }
 
+        const user = await studentsModel.findById(id)
+        if(user){
+            try{
+                user.name = name;
+                await user.save();
+                resp.body = user;
+                resp.message = "update sucess";
+            }catch(error){
+                resp.code = 500;
+                resp.message = "server error"   
+            }
+        }else{
+            resp.code = 404;
+            resp.message = "user not found"
+        }
+        return resp;
+
+    }
+    
 
 }

@@ -44,9 +44,16 @@ export class UserController extends Contorller {
         Response.status(resp.code).send(resp)
     }
     public async updateNameByID(Request: Request, Response: Response) {
-        const resp = await this.service.updateNameByID(Request.body.id,Request.body.id)
-        Response.status(resp.code).send(resp)
+        const { id, name } = Request.body;
+    
+        if (!id || !name) {
+            return Response.status(400).send({ message: "id or name is missing" });
+        }
+    
+        const resp = await this.service.updateNameByID(id, name);
+        Response.status(resp.code).send(resp);
     }
+    
 
 
 }
